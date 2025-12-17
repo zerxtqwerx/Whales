@@ -400,6 +400,15 @@ def train_models(X_train_scaled, y_train, X_val_scaled, y_val):
             max_iter=1000,
             solver='lbfgs',
             n_jobs=-1
+        ),
+        'SVM': SVC( 
+            kernel='rbf',
+            C=1.0,
+            gamma='scale',
+            class_weight='balanced',
+            probability=False,  
+            random_state=42,
+            cache_size=1000 
         )
     }
     
@@ -418,8 +427,6 @@ def train_models(X_train_scaled, y_train, X_val_scaled, y_val):
             y_val_pred = model.predict(X_val_scaled)
             val_acc = accuracy_score(y_val, y_val_pred)
             val_f1 = f1_score(y_val, y_val_pred, average='weighted')
-            val_precision = precision_score(y_val, y_val_pred, average='weighted')
-            val_recall = recall_score(y_val, y_val_pred, average='weighted')
             
             print(f"   Val Accuracy:  {val_acc:.4f}")
             print(f"   Val F1-score:  {val_f1:.4f}")
@@ -428,12 +435,12 @@ def train_models(X_train_scaled, y_train, X_val_scaled, y_val):
             val_results[name] = {
                 'val_acc': val_acc,
                 'val_f1': val_f1,
-                'val_precision': val_precision,
-                'val_recall': val_recall
+                'val_precision': precision_score(y_val, y_val_pred, average='weighted'),
+                'val_recall': recall_score(y_val, y_val_pred, average='weighted')
             }
             
         except Exception as e:
-            print(f"Ошибка: {type(e).__name__}")
+            print(f"Ошибка при обучении {name}: {type(e).__name__} - {str(e)[:100]}")
             continue
     
     return trained_models, val_results
