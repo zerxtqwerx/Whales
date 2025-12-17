@@ -611,7 +611,6 @@ result = main_training_pipeline(
 
 # %% 
 def get_processed_data():
-    """Функция для получения обработанных данных из основной функции"""
     train_audio_files = list(train_path.rglob('*.aiff')) + list(train_path.rglob('*.aif'))
     print(f"Найдено тренировочных файлов: {len(train_audio_files)}")
     
